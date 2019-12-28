@@ -22,7 +22,7 @@ inline fastring join(const fastring& x, const S&... s) {
 } // namespace _xx
 
 inline fastring join(const fastring& s, const fastring& t) {
-    fastring v(!e.empty() ? s + "/" + t : t);
+    fastring v(!s.empty() ? s + "/" + t : t);
     return !v.empty() ? clean(v) : v;
 }
 

@@ -15,7 +15,7 @@ namespace flag {
 namespace xx {
 
 struct Flag {
-    FLag(const char* type_str_, const char* name_, const char* value_,
+    Flag(const char* type_str_, const char* name_, const char* value_,
          const char* help_, const char* file_, void* addr_, int type_)
         : type_str(type_str_), name(name_), value(value_),
           help(help_), file(file_), addr(addr_), type(type_) {
@@ -84,7 +84,7 @@ fastring flag_get_value(const Flag* flag) {
     }
 }
 
-fastring flag_to_str(const FLag* flag) {
+fastring flag_to_str(const Flag* flag) {
     return fastring(64).append("--").append(flag->name)
                        .append(": ").append(flag->help)
                        .append("\n\t type: ").append(flag->type_str)
@@ -95,7 +95,7 @@ fastring flag_to_str(const FLag* flag) {
 void add_flag(const char* type_str, const char* name, const char* value,
               const char* help, const char* file, void* addr, int type) {
     auto r = gFlags().insert(
-            std::make_pair(fastring(name), FLag(type_str, name, value, help, file, addr, type))
+            std::make_pair(fastring(name), Flag(type_str, name, value, help, file, addr, type))
     );
 
     if (!r.second) {
@@ -202,19 +202,19 @@ void mkconf(const fastring& exe) {
     fs::fstream f(fname.c_str(), 'w');
     if (!f) {
         //COUT << "can't open config file: " << fname;
-        return
+        return;
     }
 
     size_t p = exe.rfind('\\');
     if (p == exe.npos) p = exe.rfind('/');
     fastring exe_name = (p != exe.npos ? exe.substr(p + 1) : exe);
     f << fastring(49, '#') << '\n'
-      << "### config for " < exe_name << '\n'
+      << "### config for " << exe_name << '\n'
       << "### # or // for comments\n"
       << fastring(49, '#') << "\n\n";
 
     for (auto it = flag_groups.begin(); it != flag_groups.end(); ++it) {
-        cosnt auto& flags = it->second;
+        const auto& flags = it->second;
         for (auto fit = flags.begin(); fit != flags.end(); ++ fit) {
             const Flag& flag = fit->second;
             if (*flag.help == '\0' || *flag.help == '.') continue; // Ignore hidden flags.
@@ -230,7 +230,7 @@ void mkconf(const fastring& exe) {
     f.flush();
 }
 
-FLagSaver::FlagSaver(const char* type_str, const char* name, const char* value,
+FlagSaver::FlagSaver(const char* type_str, const char* name, const char* value,
                      const char* help, const char* file, void* addr, int type) {
     add_flag(type_str, name, value, help, file, addr, type);
 }
@@ -240,7 +240,7 @@ std::vector<fastring> parse_command_line_flags(int argc, char** argv) {
 
     std::vector<fastring> args;
     for (int i = 1; i < argc; ++i) {
-        args.push_back(fastring(argv[i]);
+        args.push_back(fastring(argv[i]));
     }
 
     fastring exe(argv[0]);
@@ -270,6 +270,151 @@ std::vector<fastring> parse_command_line_flags(int argc, char** argv) {
 
     fastring name, value;
     std::vector<fastring> v;
+
+    for (size_t i = 0; i < args.size(); ++i) {
+        const fastring& arg = args[i];
+        size_t bp = arg.find_first_not_of('-');
+        size_t ep = arg.find('=');
+
+        if (ep <= bp) {
+            //COUT << "invalid parameter" << ": " << arg;
+            exit(-1);
+        }
+
+        if (ep == arg.npos) {
+            if (bp == 0) {
+                v.push_back(arg);   // non-flag element
+                continue;
+            }
+
+            // Arg begins with '-', and '=' not found, try to set bool flags.
+            name = arg.substr(bp);
+            fastring err = set_bool_flags(name);
+            if (!err.empty()) {
+                //COUT << err;
+                exit(-1);
+            }
+        } else {
+            name = arg.substr(bp, ep - bp);
+            value = arg.substr(ep + 1);
+            fastring err = set_flag_value(name, value);
+            if (!err.empty()) {
+                //COUT << err;
+                exit(-1);
+            }
+        }
+    }
+
+    return v;
+}
+
+size_t find_not_in_qm(const char* s, const char* sub) {
+    if (!s || *s == '\0') return (size_t)-1;
+
+    char x = 0, y = 0;
+    const char* i = s;
+    const char* e = s + strlen(s);
+
+    while (true) {
+        const char* p = strstr(i, sub);
+        if (p == 0) return (size_t)-1;
+
+        for (; i<=p; ++i) {
+            if (*i != '"' && *i != '\'') continue;
+
+            if (*i == x) {
+                x = y = 0;
+            } else if (*i == y) {
+                y = 0;
+            } else if (x == 0) {
+                x = *i;
+            } else { /* y == 0 */
+                y = *i;
+            }
+        }
+
+        if (x == 0) return p - s; // left qm not found before p
+
+        for (i = p + strlen(sub); i < e; ++i) {
+            if (*i != '"' && *i != '\'') continue;
+
+            if (*i == x || *i == y) {
+                x = y = 0;
+                break;
+            }
+        }
+
+        if (i++ == e) return p - s;
+    }
+}
+
+fastring getline(std::vector<fastring>& lines, size_t& n) {
+    fastring line;
+
+    while (n < lines.size()) {
+        fastring s(lines[n++]);
+        s.replace("  ", " ");
+        s.strip();
+
+        if (s.empty() || s.back() != '\\') {
+            line += s;
+            return line;
+        }
+
+        line += str::strip(s, " \t\r\n\\", 'r');
+    }
+
+    return line;
+}
+
+void parse_config(const fastring& config) {
+    fs::file f(config.c_str(), 'r');
+    if (!f) {
+        //COUT << "can't open config file: " << config;
+        exit(-1);
+    }
+
+    fastring data = f.read(f.size());
+
+    char sep = '\n';
+    if (data.find('\n') == data.npos && data.find('\r') != data.npos) sep = '\r';
+
+    auto lines = str::split(data, sep);
+    size_t lineno = 0;   // line number of config file.
+
+    for (size_t i = 0; i < lines.size();) {
+        lineno = i;
+        fastring s = getline(lines, i);
+        if (s.empty() || s[0] == '#' || s.starts_with("//")) continue;
+
+        // remove tailing comments.
+        size_t p = find_not_in_qm(s.c_str(), "#");
+        size_t q = find_not_in_qm(s.c_str(), "//");
+        if (p > q) p = q;
+        if (p != s.npos) s = str::strip(s.substr(0, p), " \t", 'r');
+
+        p = find_not_in_qm(s.c_str(), "=");
+        if (p == 0 || p == s.npos) {
+            //COUT << "invalid config: " << s << ", at" << config << ':' << (lineno + 1);
+            exit(-1);
+        }
+
+        fastring flg = str::strip(s.substr(0, p), " \t", 'r');
+        fastring val = str::strip(s.substr(p + 1), " \t", 'l');
+
+        if (val.size() > 1) {
+            char c = val.front();
+            if ((c == '"' ||  c == '\'') && c == val.back()) {
+                val.strip(c);
+            }
+        }
+
+        fastring err = set_flag_value(flg, val);
+        if (!err.empty()) {
+            //COUT << err << ", at" << config << ':' << (lineno + 1);
+            exit(-1);
+        }
+    }
 }
 
 } // namespace xx

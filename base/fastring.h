@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef __MSC_VER
+#ifdef _MSC_VER
 #pragma warning (disable:4200)
 #endif
 
@@ -231,6 +231,9 @@ class fastring {
             this->strip((const char*)s, d);
         }
 
+		bool starts_with(char c) const {
+			return !this->empty() && this->front() == c;
+		}
         bool starts_with(const char* s, size_t n) const {
             if (n == 0) return true;
             return this->size() >= n && memcmp(_p->s, s, n) == 0;

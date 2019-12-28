@@ -235,6 +235,43 @@ FLagSaver::FlagSaver(const char* type_str, const char* name, const char* value,
     add_flag(type_str, name, value, help, file, addr, type);
 }
 
+std::vector<fastring> parse_command_line_flags(int argc, char** argv) {
+    if (argc <= 1) return std::vector<fastring>();
+
+    std::vector<fastring> args;
+    for (int i = 1; i < argc; ++i) {
+        args.push_back(fastring(argv[i]);
+    }
+
+    fastring exe(argv[0]);
+
+    if (args.size() == 1) {
+        const fastring& arg = args[0];
+
+        if (arg == "--help") {
+            show_help_info(exe);
+            exit(0);
+        }
+
+        if (arg.find_first_not_of('-') == arg.npos) {
+            show_flags_info();
+            exit(0);
+        }
+
+        if (!arg.starts_with('-') && arg.find('=') == arg.npos) {
+            if (arg.ends_with(".conf") || arg.ends_with("config")) {
+                if (fs::exists(arg)) {
+                    FLG_config = arg;
+                    args.clear();
+                }
+            }
+        }
+    }
+
+    fastring name, value;
+    std::vector<fastring> v;
+}
+
 } // namespace xx
 
 std::vector<fastring> init(int argc, char** argv) {

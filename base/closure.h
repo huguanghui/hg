@@ -32,7 +32,7 @@ class Function0 : public Closure {
 
     private:
         F _f;
-}
+};
 
 class Function1 : public Closure {
     public:

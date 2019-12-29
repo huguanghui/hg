@@ -87,7 +87,8 @@ class SyncEvent {
             _signaled = false;
         }
 
-        void wait()
+
+        void wait();
 
         // return false if timeout
         bool wait(unsigned int ms);
@@ -117,7 +118,7 @@ class Thread {
     public:
         // @cb is not saved in this thread object, but passed directory to the
         // thread function, so it can run independently from the thread object.
-        explicit Thread(Closure* cb) : id(0) {
+        explicit Thread(Closure* cb) : _id(0) {
             int r = pthread_create(&_id, 0, &Thread::_Run, cb);
             assert(r == 0);
         }
@@ -135,7 +136,7 @@ class Thread {
             : Thread(new_callback(f, p)) {
         }
 
-        explicit Thread(std::function<void>&& f) 
+        explicit Thread(std::function<void()>&& f) 
             : Thread(new_callback(std::move(f))) {
         }
 
@@ -162,7 +163,7 @@ class Thread {
         pthread_t _id;
         DISALLOW_COPY_AND_ASSIGN(Thread);
 
-        static void* Run(void* p) {
+        static void* _Run(void* p) {
             Closure* cb = (Closure*) p;
             if (cb) cb->run();
             return 0;
@@ -187,7 +188,7 @@ inline unsigned int current_thread_id() {
 template <typename T>
 class thread_ptr {
     public:
-        pthread_ptr() {
+        thread_ptr() {
             int r = pthread_key_create(&_key, 0);
             assert(r == 0);
         }

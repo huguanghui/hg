@@ -45,6 +45,7 @@ flags = [
 '-isystem',
 '/usr/local/include',
 '-I.',
+'-Iinclude',
 ]
 
 

@@ -7,7 +7,7 @@
 
 #include <signal.h>
 #include <unistd.h>
-#include <execinfo.h>
+#include "execinfo.h"
 #include <sys/wait.h>
 
 #ifndef _GNU_SOURCE
@@ -77,6 +77,15 @@ StackTraceImpl::StackTraceImpl() {
     set_sig_handler(SIGPIPE, SIG_IGN, 0);
 }
 
+StackTraceImpl::~StackTraceImpl() {
+    set_sig_handler(SIGSEGV, SIG_DFL, 0);
+    set_sig_handler(SIGABRT, SIG_DFL, 0);
+    set_sig_handler(SIGFPE, SIG_DFL, 0);
+    set_sig_handler(SIGBUS, SIG_DFL, 0);
+    set_sig_handler(SIGILL, SIG_DFL, 0);
+    delete kParam;
+}
+
 #define write_msg(msg, len, f) \
     do { \
         fwrite(msg, 1, len, stderr); \
@@ -142,24 +151,24 @@ void StackTraceImpl::on_signal(int sig) {
 
     do {
         switch (sig) {
-            case SIGSEGV:
-                fs.append("SIGSEGV: segmentation fault\n");
-                break;
-            case SIGABRT:
-                if (!check_failed) fs.append("SIGABRT: aborted\n");
-                break;
-            case SIGFPE:
-                fs.append("SIGFPE: floating point exception\n");
-                break;
-            case SIGBUS:
-                fs.append("SIGBUS: bus error\n");
-                break;
-            case SIGILL:
-                fs.append("SIGILL, illegal instruction\n");
-                break;
-            default:
-                fs.append("caught unexpected signal\n");
-                break;
+          case SIGSEGV:
+            fs.append("SIGSEGV: segmentation fault\n");
+            break;
+          case SIGABRT:
+            if (!check_failed) fs.append("SIGABRT: aborted\n");
+            break;
+          case SIGFPE:
+            fs.append("SIGFPE: floating point exception\n");
+            break;
+          case SIGBUS:
+            fs.append("SIGBUS: bus error\n");
+            break;
+          case SIGILL:
+            fs.append("SIGILL: illegal instruction\n");
+            break;
+          default:
+            fs.append("caught unexpected signal\n");
+            break;
         }
     } while (0);
 
@@ -238,7 +247,7 @@ void StackTraceImpl::on_signal(int sig) {
 }
 
 StackTrace* new_stack_trace() {
-    return new StackTraceImpl();
+    return new StackTraceImpl;
 }
 
 #endif

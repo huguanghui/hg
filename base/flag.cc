@@ -1,5 +1,5 @@
 #include "flag.h"
-//#include "log.h"
+#include "log.h"
 #include "fs.h"
 #include "os.h"
 #include "str.h"
@@ -99,8 +99,8 @@ void add_flag(const char* type_str, const char* name, const char* value,
     );
 
     if (!r.second) {
-        //COUT << "multiple definitions of flag: " << name
-        //     << ", from " << r.first->second.file << " and " << file;
+        COUT << "multiple definitions of flag: " << name
+             << ", from " << r.first->second.file << " and " << file;
         exit(-1);
     }
 }
@@ -154,7 +154,7 @@ void show_flags_info() {
     for (auto it = gFlags().begin(); it != gFlags().end(); ++it) {
         const auto& flag = it->second;
         if (*flag.help != '\0') {
-            //COUT << flag_to_str(&flag);
+            COUT << flag_to_str(&flag);
         }
     }
 }
@@ -201,7 +201,7 @@ void mkconf(const fastring& exe) {
 
     fs::fstream f(fname.c_str(), 'w');
     if (!f) {
-        //COUT << "can't open config file: " << fname;
+        COUT << "can't open config file: " << fname;
         return;
     }
 
@@ -277,7 +277,7 @@ std::vector<fastring> parse_command_line_flags(int argc, char** argv) {
         size_t ep = arg.find('=');
 
         if (ep <= bp) {
-            //COUT << "invalid parameter" << ": " << arg;
+            COUT << "invalid parameter" << ": " << arg;
             exit(-1);
         }
 
@@ -291,7 +291,7 @@ std::vector<fastring> parse_command_line_flags(int argc, char** argv) {
             name = arg.substr(bp);
             fastring err = set_bool_flags(name);
             if (!err.empty()) {
-                //COUT << err;
+                COUT << err;
                 exit(-1);
             }
         } else {
@@ -299,7 +299,7 @@ std::vector<fastring> parse_command_line_flags(int argc, char** argv) {
             value = arg.substr(ep + 1);
             fastring err = set_flag_value(name, value);
             if (!err.empty()) {
-                //COUT << err;
+                COUT << err;
                 exit(-1);
             }
         }
@@ -370,7 +370,7 @@ fastring getline(std::vector<fastring>& lines, size_t& n) {
 void parse_config(const fastring& config) {
     fs::file f(config.c_str(), 'r');
     if (!f) {
-        //COUT << "can't open config file: " << config;
+        COUT << "can't open config file: " << config;
         exit(-1);
     }
 
@@ -395,7 +395,7 @@ void parse_config(const fastring& config) {
 
         p = find_not_in_qm(s.c_str(), "=");
         if (p == 0 || p == s.npos) {
-            //COUT << "invalid config: " << s << ", at" << config << ':' << (lineno + 1);
+            COUT << "invalid config: " << s << ", at" << config << ':' << (lineno + 1);
             exit(-1);
         }
 
@@ -411,7 +411,7 @@ void parse_config(const fastring& config) {
 
         fastring err = set_flag_value(flg, val);
         if (!err.empty()) {
-            //COUT << err << ", at" << config << ':' << (lineno + 1);
+            COUT << err << ", at" << config << ':' << (lineno + 1);
             exit(-1);
         }
     }

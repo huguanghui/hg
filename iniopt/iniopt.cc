@@ -10,18 +10,27 @@
 #include "base/log.h"
 #include "iniparser.h"
 
-DEF_bool(boo, false, "bool flag");
-DEF_string(abc, "abc", "aabbcc");
-
-DEF_string(ao, "get", "operator suport[get|set]");
-DEF_string(as, "null", "session");
-DEF_string(av, "null", "value");
-
 static int iniparser_save(dictionary *d, const char *inipath);
+static int handler_get(std::vector<fastring> v);
+static int handler_set(std::vector<fastring> v);
+static int handler_check(std::vector<fastring> v);
+static int handler_merge(std::vector<fastring> v);
+
+typedef int (*opt_callback)(std::vector<fastring> v);
+
+struct OptHandler
+{
+    char opt[8];
+    opt_callback handler;
+};
 
 static void usage()
 {
-    COUT << "usage: iniopt [-o get|set] [-s session] [-v value]";
+    COUT << "usage:\n"
+         << "    " << "iniopt [file] get [session]               get the value of [session] from [file]\n"
+         << "    " << "iniopt [file] set [session] [value]       get the value of [session] from [file]\n"
+         << "    " << "iniopt [file] check                       check the valid of ini[file]\n"
+         << "    " << "iniopt [file] merge [subfile]             merge [subfile] to [file]";
     
     return;
 }
@@ -32,41 +41,44 @@ int main(int argc, char** argv)
     int rc;
 
     // 传参解析
-    printf("%s:%d\n", __FUNCTION__, __LINE__);
-    auto args = flag::init(argc, argv);
-
-    COUT << "boo: " << FLG_boo;
-    COUT << "abc: " << FLG_abc;
-    
-    return 0;
+    auto v = flag::init(argc, argv);
     log::init();
 
-    printf("%s:%d\n", __FUNCTION__, __LINE__);
-
-    if (args.empty()) {
+    if (v.empty() || v.size() < 2) {
         usage();
         return 0;
     }
-    printf("%s:%d\n", __FUNCTION__, __LINE__);
     
     // 有效性检测
-    COUT << "o: " << FLG_ao;
-    COUT << "s: " << FLG_as;
-    COUT << "v: " << FLG_av;
-    printf("%s:%d\n", __FUNCTION__, __LINE__);
-
-    return 0;
-
-    dictionary *dict = iniparser_load("./custommode.ini");
-
-    const char *value = iniparser_getstring(dict, "AudioIn:AudioVol", "abc");
-    printf("value: %s\n", value);
+    //for (size_t i = 0; i < v.size(); ++i)
+    //{
+    //    COUT << "Idx[" << i << "]: " << v[i].c_str();
+    //}
     
-    rc = iniparser_set(dict, "AudioIn:AudioVol", "123");
+    // v[0] - file
+    fastring file(v[0]);
+    // v[1] - operator
+    fastring opt(v[1]);
+    
+    if (!fs::exists(file.c_str()))
+    {
+        COUT << "file not exists! file: " << file;
+        return 0;
+    }
 
-    iniparser_save(dict, "./custommode.ini");
+    struct OptHandler optmap[] = {
+        {"get",     handler_get},
+        {"set",     handler_set},
+        {"check",   handler_check},
+    };
 
-    iniparser_freedict(dict);
+    for (size_t i = 0; i < sizeof(optmap)/sizeof(optmap[0]); ++i)
+    {
+        if (opt == optmap[i].opt)
+        {
+            optmap[i].handler(v);
+        }
+    }
 
     return status ;
 }
@@ -92,6 +104,69 @@ static int iniparser_save(dictionary *d, const char *inipath)
     iniparser_dump_ini(d, fp);
 
     fclose(fp);
+
+    return 0;
+}
+
+int handler_get(std::vector<fastring> v)
+{
+    fastring file(v[0]);
+    fastring session(v[2]);
+
+    dictionary *dict = iniparser_load(file.c_str());
+    if (NULL == dict)
+    {
+        return 0;
+    }
+    const char *val = iniparser_getstring(dict, session.c_str(), "");
+    COUT << val;
+    iniparser_freedict(dict);
+   
+    return 0;
+}
+
+int handler_set(std::vector<fastring> v)
+{
+    fastring file(v[0]);
+    fastring session(v[2]);
+    fastring value(v[3]);
+
+    dictionary *dict = iniparser_load(file.c_str());
+    if (NULL == dict)
+    {
+        return 0;
+    }
+    int rc = iniparser_set(dict, session.c_str(), value.c_str());
+    iniparser_save(dict, file.c_str());
+    iniparser_freedict(dict);
+    return 0;
+}
+
+int handler_check(std::vector<fastring> v)
+{
+    fastring file(v[0]);
+    
+    dictionary *dict = iniparser_load(file.c_str());
+    if (NULL == dict)
+    {
+        return 0;
+    }
+    iniparser_freedict(dict);
+
+    return 0;
+}
+
+nt handler_merge(std::vector<fastring> v)
+{
+    fastring file(v[0]);
+    fastring subfile(v[2]);
+
+    dictionary *dict = iniparser_load(file.c_str());
+    if (NULL == dict)
+    {
+        return 0;
+    }
+    iniparser_freedict(dict);
 
     return 0;
 }

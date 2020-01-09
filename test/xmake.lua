@@ -27,3 +27,6 @@ target("str_test")
     
 target("os_test")
     add_files("os_test.cc")
+    
+target("flag_test")
+    add_files("flag_test.cc")

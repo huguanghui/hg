@@ -10,9 +10,12 @@
 #include "base/log.h"
 #include "iniparser.h"
 
-DEF_string(o, "get", "operator suport[get|set]");
-DEF_string(s, "null", "session");
-DEF_string(v, "null", "value");
+DEF_bool(boo, false, "bool flag");
+DEF_string(abc, "abc", "aabbcc");
+
+DEF_string(ao, "get", "operator suport[get|set]");
+DEF_string(as, "null", "session");
+DEF_string(av, "null", "value");
 
 static int iniparser_save(dictionary *d, const char *inipath);
 
@@ -23,21 +26,36 @@ static void usage()
     return;
 }
 
-int main(int argc, char * argv[])
+int main(int argc, char** argv)
 {
-    int     status ;
+    int status ;
     int rc;
 
     // 传参解析
-    auto v = flag::init(argc, argv);
+    printf("%s:%d\n", __FUNCTION__, __LINE__);
+    auto args = flag::init(argc, argv);
+
+    COUT << "boo: " << FLG_boo;
+    COUT << "abc: " << FLG_abc;
+    
+    return 0;
     log::init();
 
-    if (v.empty()) {
+    printf("%s:%d\n", __FUNCTION__, __LINE__);
+
+    if (args.empty()) {
         usage();
         return 0;
     }
+    printf("%s:%d\n", __FUNCTION__, __LINE__);
     
     // 有效性检测
+    COUT << "o: " << FLG_ao;
+    COUT << "s: " << FLG_as;
+    COUT << "v: " << FLG_av;
+    printf("%s:%d\n", __FUNCTION__, __LINE__);
+
+    return 0;
 
     dictionary *dict = iniparser_load("./custommode.ini");
 

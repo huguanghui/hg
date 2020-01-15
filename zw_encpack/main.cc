@@ -32,6 +32,8 @@ typedef struct tageImageInfo
 
 static void usage()
 {
+    COUT << "usage:\n";
+    COUT << "    " << "./zw_encpack type=TYPE_IPG-5520PCR-AI uboot=./u-boot.bin kernel=./uImage app=./romfs.img web=./web.img conf=./config.img custom=./custom.img onvif=./onvif.img output=output.bin";
     return ;
 }
 

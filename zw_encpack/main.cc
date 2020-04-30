@@ -180,8 +180,25 @@ int main(int argc, char *argv[])
     memset(buf_header, 0, sizeof(buf_header));
     header.append(MAGIC_BIN, sizeof(MAGIC_BIN));
     header.append(MAGIC_INFO, sizeof(MAGIC_INFO));
-    snprintf(buf, sizeof(buf), "[%s]", type.c_str());
-    header.append(buf, strlen(buf));
+    // 处理多版型问题
+    std::vector<fastring> arry_type = str::split(type, ' ');
+    std::vector<fastring>::iterator it;
+    int type_len = 0;
+    for (it=arry_type.begin(); it != arry_type.end(); it++)
+    {
+        if (strlen((*it).c_str()) > 0)
+        {
+            type_len++;
+            snprintf(buf, sizeof(buf), "[%s]", (*it).c_str());
+            header.append(buf, strlen(buf));
+        }
+    }
+    if (0 == type_len)
+    {
+        COUT << "Type Param Error";
+        return -1;
+    }
+    
     header.append(MAGIC_IMG, sizeof(MAGIC_IMG));
     header.append(&image_num, 4);
     for (int i = 0; i < image_num; ++i) {

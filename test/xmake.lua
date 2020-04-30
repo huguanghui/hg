@@ -6,6 +6,8 @@ add_includedirs("..")
 add_linkdirs("../lib")
 add_links("base")
 
+add_syslinks("pthread", "dl")
+
 after_build(function ()
     os.rm("build")
 end)
@@ -30,3 +32,6 @@ target("os_test")
     
 target("flag_test")
     add_files("flag_test.cc")
+
+target("fastring_test")
+    add_files("fastring_test.cc")

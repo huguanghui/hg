@@ -204,10 +204,14 @@ int main(int argc, char *argv[])
     for (int i = 0; i < image_num; ++i) {
         header.append(&image_info[i], sizeof(IMAGE_INFO));
     }
-    memcpy(buf_header, header.data(), header.size());
-    out_file.write(buf_header, sizeof(buf_header));
+    char head_append[20] = {0};
+    header.append(head_append, sizeof(head_append));
+    //COUT << header.size();
+    //memcpy(buf_header, header.data(), header.size());
+    out_file.write(header.data(), header.size());
     // 补上对齐
-    total_size = sizeof(buf_header);
+    //total_size = sizeof(buf_header);
+    total_size = header.size();
     padd_len = total_size % PACK_ALIGN;
     if (padd_len > 0) {
         padd_len = PACK_ALIGN - padd_len;

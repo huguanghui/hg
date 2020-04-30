@@ -1,6 +1,7 @@
 target("zw_encpack")
     set_kind("binary")
     add_cxxflags("-std=c++11")
+    add_ldflags("-static")
     set_optimize("faster")
     set_warnings("all")
     set_targetdir("../build")

@@ -128,10 +128,11 @@ int main(int argc, char *argv[])
         COUT << imageNum;
         for (int i = 0; i < imageNum; ++i) {
            bin_file.read(&imageInfo, sizeof(imageInfo)); 
-           COUT << imageInfo.ImageType;
+           COUT << "IDX: " << i;
+           COUT << "IMAGE_TYPE: " << imageInfo.ImageType;
            HexOutput(imageInfo.ImageCode, sizeof(imageInfo.ImageCode));
-           COUT << imageInfo.ImageLen;
-           COUT << imageInfo.ImageOffset;
+           COUT << "IMAGE_LEN: " << imageInfo.ImageLen;
+           COUT << "IMAGE_OFFSET: " << imageInfo.ImageOffset;
            memcpy(&header.img_inf[imageInfo.ImageType-1], &imageInfo, sizeof(IMAGE_INFO));
         }
 

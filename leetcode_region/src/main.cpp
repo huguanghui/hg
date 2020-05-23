@@ -13,9 +13,7 @@ using namespace std;
 
 // 704*576
 
-struct Point {
-    int x;
-    int y;
+struct Point { int x; int y;
 };
 
 struct PointF {
@@ -59,6 +57,20 @@ static bool IsDecimale(float v)
     return a == b;
 }
 
+static int pnpoly(float x, float y, struct PointF *reg)
+{
+    int i, j,c = 0;
+    for (i = 0, j = 3; i < 4; j = i++) 
+    {
+        if ( ((reg[i].x > x) != (reg[i].y > y)) &&
+            (x < (reg[j].x-reg[i].x) * (y-reg[i].y) / (reg[j].y-reg[i].y) + reg[i].x) )
+        {
+            c = !c;
+        }
+    }
+    return c;
+}
+
 static void gen_block(struct Region *reg, struct mf_block *info)
 {
     if (NULL == reg || NULL == info) {
@@ -95,6 +107,7 @@ static void gen_block(struct Region *reg, struct mf_block *info)
         }
     }
 
+
     COUT << "[" << x_min << ", " << y_min << "]";
     COUT << "[" << x_max << ", " << y_max << "]";
 
@@ -117,9 +130,19 @@ static void gen_block(struct Region *reg, struct mf_block *info)
     COUT << "[" << right << ", " << bottom << "]";
 
     memset(info, 0, sizeof(struct mf_block));
+
+    float cur_x, cur_y = 0;
+    int b_e = 0;
     for (int i = top; i < bottom; ++i) {
        for (int j = left; j < right; ++j) {
-          info->b[i][j] = 1; 
+          // 计算该点是否在规则区域内
+          cur_x = i - 0.5;
+          cur_y = j + 0.5;
+          b_e = pnpoly(cur_x, cur_y, p);
+          if (1 == b_e)
+          {
+            info->b[i][j] = 1; 
+          }
        } 
     }
    // float tmp[] = {1,0, 1.1, 1.2, 1.01, 1.001, 2.0, 3.3};
@@ -133,6 +156,28 @@ static void gen_block(struct Region *reg, struct mf_block *info)
     return;
 }
 
+/**
+* @brief: 测试指定点是否在不规则图像内
+*
+* @param: int num
+*       : float x
+*       : float y
+*       : float *rectx
+*       : float *recty
+*
+* @return: static int 
+*/
+int t_pnpoly(int nvert, float *vertx, float *verty, float testx, float testy)
+{
+  int i, j, c = 0;
+  for (i = 0, j = nvert-1; i < nvert; j = i++) {
+    if ( ((verty[i]>testy) != (verty[j]>testy)) &&
+     (testx < (vertx[j]-vertx[i]) * (testy-verty[i]) / (verty[j]-verty[i]) + vertx[i]) )
+       c = !c;
+  }
+  return c;
+}
+
 int main(int argc, char** argv)
 {
     auto v = flag::init(argc, argv);
@@ -144,14 +189,20 @@ int main(int argc, char** argv)
     memset(&info, 0, sizeof(struct mf_block));
     memset(&reg, 0, sizeof(struct Region));
 
-    reg.a = {45, 60};
-    reg.b = {20, 150};
-    reg.c = {370, 10};
-    reg.d = {690, 500};
+    reg.a = {50, 200};
+    reg.b = {300, 500};
+    reg.c = {700, 400};
+    reg.d = {100, 100};
 
-    gen_block(&reg, &info);
+    //gen_block(&reg, &info);
+    int nvect = 4;
+    float vertx[] = {4.0, 50.0, 70.0, 80.0};
+    float verty[] = {5.0, 150.0, 150.0, 5.0};
     
-    block_print(&info);
+    int rc = t_pnpoly(4, vertx, verty, 4.0, 6.0);
+    COUT << "rc: " << rc;
+    
+    //block_print(&info);
 
     return 0;
 }

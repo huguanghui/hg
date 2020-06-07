@@ -1,3 +1,5 @@
+add_rules("mode.debug", "mode.release")
+
 set_kind("binary")
 add_cxxflags("-std=c++11")
 set_warnings("all")

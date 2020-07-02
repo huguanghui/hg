@@ -5,9 +5,7 @@
 #include "base/fs.h"
 #include "base/flag.h"
 #include "base/log.h"
-
 using namespace std;
-
 #define COL 160
 #define ROW 90
 

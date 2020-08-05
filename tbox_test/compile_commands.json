@@ -1,0 +1,6 @@
+[
+{
+  "directory": "/home/hgh/Documents/GIT/tbox_test",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-Wall", "-Werror", "-O3", "-std=c++11", "-D__tb_prefix__=\"tbox_test\"", "-I/home/hgh/.xmake/packages/t/tbox/v1.6.5/57d65cb850654841a6e30f169c9592d9/include", "-I/usr/local/include", "-I/usr/include", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-m64", "-o", "build/.objs/tbox_test/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+}]

@@ -1,0 +1,17 @@
+target("hv_test")
+    set_kind("binary")
+    add_links("hv")
+    add_files("main.cpp")
+    add_syslinks("pthread", "dl")
+
+target("hv_nlog")
+    set_kind("binary")
+    add_links("hv")
+    add_files("nlog.cpp", "shared_buff.cpp")
+    add_syslinks("pthread", "dl")
+
+target("hv_custom")
+    set_kind("binary")
+    add_links("hv")
+    add_files("hcustom.cpp", "shared_buff.cpp")
+    add_syslinks("pthread", "dl")

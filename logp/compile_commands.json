@@ -1,0 +1,6 @@
+[
+{
+  "directory": "/root/GIT/hg/logp",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-Iinclude", "-I/usr/local/include", "-I/usr/include", "-m64", "-o", "build/.objs/prtlog/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+}]

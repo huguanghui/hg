@@ -54,3 +54,4 @@ dkms.conf
 .xmake/
 build/
 .cache/
+.vscode/

@@ -1,0 +1,6 @@
+[
+{
+  "directory": "/root/GIT/hg/libhv_test",
+  "arguments": ["/usr/bin/ccache", "/opt/hisi-linux/x86-arm/arm-himix100-linux/bin/arm-himix100-linux-gcc", "-c", "-g", "-O0", "-Iinclude", "-I/opt/hisi-linux/x86-arm/arm-himix100-linux/include", "-o", "build/.objs/libhv_test/linux/arm/debug/src/main.c.o", "src/main.c"],
+  "file": "src/main.c"
+}]

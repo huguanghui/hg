@@ -55,3 +55,6 @@ dkms.conf
 build/
 .cache/
 .vscode/
+
+Frame_Parse/.root
+Frame_Parse/.ycm_extra_conf.py

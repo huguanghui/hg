@@ -1,0 +1,6 @@
+[
+{
+  "directory": "/home/hgh/Documents/GIT/hg/Frame_Parse",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-O3", "-I", "/home/hgh/.xmake/packages/f/ffmpeg/4.0.2/0e760aa284484dd5a5ef116167e4f22c/include", "-DNDEBUG", "-o", "build/.objs/Frame_Parse/linux/x86_64/release/src/main.c.o", "src/main.c"],
+  "file": "src/main.c"
+}]

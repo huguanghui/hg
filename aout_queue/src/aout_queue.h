@@ -7,26 +7,24 @@ extern "C" {
 
 #define DATALEN 320
 
-typedef enum
-{
-	AENC_PCM,
-	AENC_G711u,	
-	AENC_G726,	
+typedef enum {
+  AENC_PCM,
+  AENC_G711u,
+  AENC_G726,
 } E_AENC_TYPE;
-	
-typedef struct _AOUT_CAP
-{
-	unsigned int queue_size;
-	unsigned int max_datalen;	
-}AOUT_CAP;
 
-typedef struct _AOUT_BUF
-{
-	unsigned int datalen;
-	char* data;
-}AOUT_BUF;
+typedef struct _AOUT_CAP {
+  unsigned int queue_size;
+  unsigned int max_datalen;
+} AOUT_CAP;
 
-int aout_queue_create();
+typedef struct _AOUT_BUF {
+  E_AENC_TYPE type;
+  unsigned int datalen;
+  char *data;
+} AOUT_BUF;
+
+int aout_queue_create(AOUT_CAP cap);
 
 void aout_queue_destroy();
 

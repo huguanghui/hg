@@ -5,8 +5,6 @@
 extern "C" {
 #endif
 
-#define DATALEN 320
-
 typedef enum {
   AENC_PCM,
   AENC_G711u,
@@ -30,7 +28,7 @@ void aout_queue_destroy();
 
 int aout_enqueue(AOUT_BUF s);
 
-AOUT_BUF aout_dequeue();
+int aout_dequeue(AOUT_BUF *s);
 
 #ifdef __cplusplus
 }

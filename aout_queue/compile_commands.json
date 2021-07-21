@@ -1,0 +1,11 @@
+[
+{
+  "directory": "/home/abc/GIT/hg/aout_queue",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/aout_queue/linux/x86_64/release/src/aout_queue.c.o", "src/aout_queue.c"],
+  "file": "src/aout_queue.c"
+},
+{
+  "directory": "/home/abc/GIT/hg/aout_queue",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/aout_queue/linux/x86_64/release/src/main.c.o", "src/main.c"],
+  "file": "src/main.c"
+}]

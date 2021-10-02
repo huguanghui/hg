@@ -1,0 +1,11 @@
+target("t_server")
+    set_kind("binary")
+    add_includedirs("inc")
+    add_syslinks("pthread","dl")
+    add_files("src/server.c")
+
+target("t_client")
+    set_kind("binary")
+    add_includedirs("inc")
+    add_syslinks("pthread","dl")
+    add_files("src/client.c")

@@ -1,0 +1,51 @@
+[
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Igh_log/inc", "-o", "build/.objs/gh_log/linux/x86_64/release/gh_log/src/gh_log.c.o", "gh_log/src/gh_log.c"],
+  "file": "gh_log/src/gh_log.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Iclient_server/inc", "-o", "build/.objs/udp_server/linux/x86_64/release/client_server/src/udp_server.c.o", "client_server/src/udp_server.c"],
+  "file": "client_server/src/udp_server.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Igh_log/inc", "-o", "build/.objs/demo_log/linux/x86_64/release/demo/src/main.c.o", "demo/src/main.c"],
+  "file": "demo/src/main.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Igh_log/inc", "-o", "build/.objs/demo_log/linux/x86_64/release/demo/src/gh_queue.c.o", "demo/src/gh_queue.c"],
+  "file": "demo/src/gh_queue.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Iclient_server/inc", "-o", "build/.objs/t_server/linux/x86_64/release/client_server/src/server.c.o", "client_server/src/server.c"],
+  "file": "client_server/src/server.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Iutil_file/inc", "-o", "build/.objs/util_file/linux/x86_64/release/util_file/src/util_log.c.o", "util_file/src/util_log.c"],
+  "file": "util_file/src/util_log.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Iutil_file/inc", "-o", "build/.objs/util_file/linux/x86_64/release/util_file/src/main.c.o", "util_file/src/main.c"],
+  "file": "util_file/src/main.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Iutil_file/inc", "-o", "build/.objs/util_file/linux/x86_64/release/util_file/src/util_timeout_task.c.o", "util_file/src/util_timeout_task.c"],
+  "file": "util_file/src/util_timeout_task.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Iutil_file/inc", "-o", "build/.objs/util_file/linux/x86_64/release/util_file/src/util_file.c.o", "util_file/src/util_file.c"],
+  "file": "util_file/src/util_file.c"
+},
+{
+  "directory": "/home/abc/GIT/hg",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-Iclient_server/inc", "-o", "build/.objs/t_client/linux/x86_64/release/client_server/src/client.c.o", "client_server/src/client.c"],
+  "file": "client_server/src/client.c"
+}]
